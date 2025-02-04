@@ -1,27 +1,79 @@
-Objective: Create an interactive quiz that asks users questions about animals and provides feedback on their answers.
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
 
-Features:
+int check_guess(char guess[], const char *answer, int score) {
+    int attempt = 0;
+    int still_guessing = 1;
 
-Welcome Message: Display a welcome message to the user when the program starts.
+    
+    char answer_lower[50];
+    strncpy(answer_lower, answer, sizeof(answer_lower) - 1);
+    answer_lower[sizeof(answer_lower) - 1] = '\0'; 
+    for (int i = 0; answer_lower[i]; i++) {
+        answer_lower[i] = tolower(answer_lower[i]);
+    }
 
-Quiz Questions: Ask the user a series of questions about animals (e.g., largest mammal, fastest land animal).
+    while (still_guessing && attempt < 3) {
+        for (int i = 0; guess[i]; i++) {
+            guess[i] = tolower(guess[i]);
+        }
 
-User Input: Accept user input for each question.
+        if (strcmp(guess, answer_lower) == 0) {
+            printf("Correct answer!\n");
+            score += 1;
+            still_guessing = 0;
+        } else {
+            if (attempt < 2) {
+                printf("Sorry, incorrect answer. Try again: ");
+                fgets(guess, 50, stdin);  
+        
+                guess[strcspn(guess, "\n")] = '\0';
+            }
+            attempt += 1;
+        }
+    }
 
-Answer Validation: Check the user's answers against the correct answers.
+    if (attempt == 3) {
+        printf("The correct answer is: %s\n", answer);
+    }
 
-Score Calculation: Keep track of the user's score and provide feedback on their performance.
+    return score;
+}
 
-End of Quiz: Display the user's total score and a goodbye message at the end of the quiz.
+int main() {
+    int score = 0;
+    char guess1[50], guess2[50], guess3[50], guess4[50];
 
-Components:
+    printf("Welcome to the Animal Quiz!\n");
 
-main.c: The main file where the quiz is executed.
+    
+    printf("Which bear lives at the North pole: ");
+    fgets(guess1, 50, stdin);  
+    guess1[strcspn(guess1, "\n")] = '\0'; 
+    score = check_guess(guess1, "polar bear", score);
 
-questions.h: Header file containing the questions and answers.
 
-questions.c: Source file containing the functions to handle questions and answers.
+    printf("Which is the largest animal: ");
+    fgets(guess2, 50, stdin);  
+    guess2[strcspn(guess2, "\n")] = '\0';  
+    score = check_guess(guess2, "blue whale", score);
 
-utils.h: Header file for utility functions (e.g., clearing the screen).
+    
+    printf("Which is the fastest land animal: ");
+    fgets(guess3, 50, stdin);  
+    guess3[strcspn(guess3, "\n")] = '\0';  
+    score = check_guess(guess3, "cheetah", score);
 
-utils.c: Source file for utility functions.
+    
+    printf("Which animal is known for its trunk: ");
+    fgets(guess4, 50, stdin);  
+    guess4[strcspn(guess4, "\n")] = '\0';  
+    score = check_guess(guess4, "elephant", score);
+
+    
+    printf("Your final score is: %d/4\n", score);
+
+    return 0;
+}
